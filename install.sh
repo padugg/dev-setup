@@ -84,7 +84,9 @@ setup_git_alias() {
 }
 
 # Install Things
-sudo dnf install make gcc zoxide git -y
+sudo dnf config-manager --set-enabled crb
+sudo dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
+sudo dnf install make gcc zoxide git ansible -y
 
 setup_git
 
