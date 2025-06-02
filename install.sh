@@ -53,6 +53,12 @@ setup_zoxide() {
     fi
 }
 
+setup_terraform() {
+    sudo yum install -y yum-utils
+    sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+    sudo yum -y install terraform
+}
+
 setup_git_alias() {
     grep '#gs()' ~/.bashrc
     if [[ $? != 0 ]]; then
@@ -83,6 +89,21 @@ setup_git_alias() {
     fi
 }
 
+setup_kubernetes_client() {
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    curl -LO "https://github.com/derailed/k9s/releases/download/v0.50.6/k9s_linux_amd64.rpm"
+    chmod +x ./kubectl
+    sudo mv ./kubectl /usr/bin/kubectl
+    sudo dnf install k9s_linux_amd64.rpm
+    rm k9s_linux_amd64.rpm
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+
+    grep 'alias k=kubectl'
+    if [[ $? != 0 ]]; then
+        echo "alias k=kubectl" >> ~/.bashrc
+    fi
+}
+
 # Install Things
 sudo dnf config-manager --set-enabled crb
 sudo dnf install https://dl.fedoraproject.org/pub/epel/epel{,-next}-release-latest-9.noarch.rpm
@@ -95,5 +116,9 @@ setup_nvim
 setup_zoxide
 
 setup_git_alias
+
+setup_terraform
+
+setup_kubernetes_client
 
 source ~/.bashrc
